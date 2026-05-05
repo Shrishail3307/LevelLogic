@@ -27,10 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Avatar,
-  AvatarFallback,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -74,9 +71,14 @@ function NavMain({ items }: { items: typeof mainNav }) {
                 isActive={pathname.startsWith(item.url)}
                 tooltip={item.title}
               >
-                <Link href={item.url} className="group-data-[collapsible=icon]:justify-center">
+                <Link
+                  href={item.url}
+                  className="group-data-[collapsible=icon]:justify-center"
+                >
                   <item.icon />
-                  <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+                  <span className="group-data-[collapsible=icon]:hidden">
+                    {item.title}
+                  </span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -104,9 +106,14 @@ function NavSupport({ items }: { items: typeof supportNav }) {
                 isActive={pathname === item.url}
                 tooltip={item.title}
               >
-                <Link href={item.url} className="group-data-[collapsible=icon]:justify-center">
+                <Link
+                  href={item.url}
+                  className="group-data-[collapsible=icon]:justify-center"
+                >
                   <item.icon />
-                  <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+                  <span className="group-data-[collapsible=icon]:hidden">
+                    {item.title}
+                  </span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -241,7 +248,7 @@ export function StudentSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" variant="floating" {...props}>
       <SidebarHeader>
         <BrandHeader />
       </SidebarHeader>
