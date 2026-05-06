@@ -1,164 +1,173 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { ArrowUpRight, ArrowRight, PlayCircle, Trophy, Target, Zap, Clock, TrendingUp } from "lucide-react";
+import { ArrowUpRight, ArrowRight, PlayCircle, Trophy, Target, Zap, Clock, TrendingUp, ChevronRight, Activity } from "lucide-react";
 import Link from "next/link";
 import { ScorePill } from "@/components/ui/score-pill";
-import { mockResults } from "@/lib/mock-data";
+import { useDataStore } from "@/lib/store";
+import { Button } from "@/components/ui/button";
 
 export default function StudentDashboardPage() {
-  const recentTests = mockResults.slice(0, 5);
+  const { results, tests } = useDataStore();
+  const recentResults = results.slice(0, 5);
+  
+  const totalTests = results.length;
+  const avgScore = totalTests > 0 
+    ? Math.round(results.reduce((acc, curr) => acc + curr.percentage, 0) / totalTests)
+    : 0;
+  
+  const passCount = results.filter(r => r.status === 'Pass').length;
+  const passRate = totalTests > 0 ? Math.round((passCount / totalTests) * 100) : 0;
 
   return (
-    <div className="space-y-10 max-w-6xl mx-auto pb-20 selection:bg-surface-mid">
-      {/* Header with quick stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-canvas border border-hairline rounded-[24px] p-8 shadow-card-sm hover:shadow-card-md transition-all group">
-          <div className="flex justify-between items-start mb-6">
-            <div className="w-12 h-12 bg-surface-soft rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Zap className="w-6 h-6 text-text-main" />
-            </div>
-            <span className="flex items-center px-2.5 py-1 rounded-full bg-success-bg text-[10px] font-bold text-success-text uppercase tracking-wider">
-              +12% vs last week
-            </span>
+    <div className="space-y-12 max-w-7xl mx-auto pb-24 selection:bg-stone">
+      {/* Editorial Header */}
+      <div className="border-b border-hairline pb-12">
+        <p className="label-mono text-action-blue mb-4">Command Center</p>
+        <h1 className="text-[48px] font-display text-ink leading-tight">Performance Overview</h1>
+        <p className="text-slate text-[18px] max-w-2xl mt-4">
+          Real-time metrics and historical analysis of your technical progression. 
+          Focus on areas with high latency in cognitive processing.
+        </p>
+      </div>
+
+      {/* Stats - Surface Alternation */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-hairline border border-hairline rounded-lg overflow-hidden">
+        <div className="bg-canvas p-8 transition-colors hover:bg-stone/30 group">
+          <div className="flex justify-between items-start mb-8">
+            <p className="label-mono text-muted-slate">Assessments Completed</p>
+            <Zap className="w-5 h-5 text-ink/20 group-hover:text-action-blue transition-colors" />
           </div>
-          <p className="text-xs font-bold text-text-subtle uppercase tracking-widest mb-1">Total Tests Taken</p>
-          <h3 className="text-4xl font-bold text-text-main">12</h3>
+          <div className="flex items-end gap-4">
+            <h3 className="text-5xl font-display text-ink">{totalTests}</h3>
+            <span className="text-[12px] font-medium text-enterprise-green mb-2">Active session</span>
+          </div>
         </div>
 
-        <div className="bg-canvas border border-hairline rounded-[24px] p-8 shadow-card-sm hover:shadow-card-md transition-all group">
-          <div className="flex justify-between items-start mb-6">
-            <div className="w-12 h-12 bg-surface-soft rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <TrendingUp className="w-6 h-6 text-text-main" />
-            </div>
-            <span className="flex items-center px-2.5 py-1 rounded-full bg-success-bg text-[10px] font-bold text-success-text uppercase tracking-wider">
-              High Accuracy
-            </span>
+        <div className="bg-canvas p-8 transition-colors hover:bg-stone/30 group">
+          <div className="flex justify-between items-start mb-8">
+            <p className="label-mono text-muted-slate">Aggregate Score</p>
+            <TrendingUp className="w-5 h-5 text-ink/20 group-hover:text-action-blue transition-colors" />
           </div>
-          <p className="text-xs font-bold text-text-subtle uppercase tracking-widest mb-1">Average Score</p>
-          <h3 className="text-4xl font-bold text-text-main">78<span className="text-2xl text-text-subtle">%</span></h3>
+          <div className="flex items-end gap-4">
+            <h3 className="text-5xl font-display text-ink">{avgScore}<span className="text-2xl text-muted-slate">%</span></h3>
+            <span className="text-[12px] font-medium text-action-blue mb-2">Mean accuracy</span>
+          </div>
         </div>
 
-        <div className="bg-canvas border border-hairline rounded-[24px] p-8 shadow-card-sm hover:shadow-card-md transition-all group">
-          <div className="flex justify-between items-start mb-6">
-            <div className="w-12 h-12 bg-surface-soft rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Trophy className="w-6 h-6 text-text-main" />
-            </div>
-            <span className="flex items-center px-2.5 py-1 rounded-full bg-surface-soft text-[10px] font-bold text-text-muted uppercase tracking-wider">
-              Top 10%
-            </span>
+        <div className="bg-canvas p-8 transition-colors hover:bg-stone/30 group">
+          <div className="flex justify-between items-start mb-8">
+            <p className="label-mono text-muted-slate">Success Rate</p>
+            <Target className="w-5 h-5 text-ink/20 group-hover:text-action-blue transition-colors" />
           </div>
-          <p className="text-xs font-bold text-text-subtle uppercase tracking-widest mb-1">Current Rank</p>
-          <h3 className="text-4xl font-bold text-text-main">42<span className="text-2xl text-text-subtle">/500</span></h3>
+          <div className="flex items-end gap-4">
+            <h3 className="text-5xl font-display text-ink">{passRate}<span className="text-2xl text-muted-slate">%</span></h3>
+            <span className="text-[12px] font-medium text-coral mb-2">Pass ratio</span>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Recent Activity */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-text-main tracking-tight">Recent Activity</h2>
-            <Link href="/student/results" className="text-sm font-bold text-text-muted hover:text-text-main transition-colors flex items-center gap-1">
-              View All <ArrowRight className="w-4 h-4" />
+        <div className="lg:col-span-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-[24px] font-display text-ink">Session Log</h2>
+            <Link href="/student/results" className="text-sm font-medium text-action-blue hover:underline">
+              View all records
             </Link>
           </div>
           
-          <div className="bg-canvas border border-hairline rounded-[32px] shadow-card-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-surface-soft/50 text-[11px] uppercase tracking-[0.15em] text-text-subtle border-b border-hairline">
-                    <th className="px-8 py-5 font-bold">Test Name</th>
-                    <th className="px-8 py-5 font-bold text-center">Date</th>
-                    <th className="px-8 py-5 font-bold text-center">Performance</th>
-                    <th className="px-8 py-5 font-bold text-right">Reports</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-hairline/50">
-                  {recentTests.map((result) => (
-                    <tr key={result.id} className="group hover:bg-surface-soft/30 transition-colors">
-                      <td className="px-8 py-6">
-                        <div className="flex flex-col">
-                          <span className="font-bold text-text-main group-hover:translate-x-1 transition-transform inline-block">{result.testTitle}</span>
-                          <span className="text-xs font-medium text-text-subtle uppercase tracking-wider">Aptitude Logic</span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 text-center text-sm font-semibold text-text-muted italic">
-                        {new Date(result.date).toLocaleDateString()}
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex justify-center">
-                          <ScorePill score={result.score} total={result.total} />
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                        <Link href={`/student/results/${result.id}`} className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-canvas border border-hairline hover:border-text-main hover:bg-surface-soft transition-all shadow-sm">
-                          <ArrowRight className="w-4 h-4 text-text-main" />
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="space-y-px border-t border-hairline">
+            {recentResults.map((result) => (
+              <Link key={result.id} href={`/student/results/${result.id}`} className="bg-canvas p-8 flex items-center justify-between group hover:bg-stone transition-colors border-b border-hairline">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className={cn(
+                      "label-mono text-[9px] uppercase tracking-widest px-2 py-0.5 border rounded-full",
+                      result.status === 'Pass' ? 'border-enterprise-green/30 text-enterprise-green' : 'border-coral/30 text-coral'
+                    )}>
+                      {result.status}
+                    </span>
+                    <span className="text-[12px] text-muted-slate">
+                      {new Date(result.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <h4 className="text-[20px] font-display text-ink group-hover:text-action-blue transition-colors">
+                    {result.testTitle}
+                  </h4>
+                </div>
+                <div className="flex items-center gap-12">
+                  <div className="text-right hidden sm:block">
+                    <p className="label-mono text-[10px] text-muted-slate mb-1">Score</p>
+                    <p className="text-[20px] font-display text-ink">{result.percentage}%</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-hairline group-hover:text-action-blue transition-colors translate-x-0 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            ))}
+
+            {recentResults.length === 0 && (
+              <div className="py-24 text-center bg-stone/20 rounded-b-lg">
+                <Activity className="w-12 h-12 text-muted-slate mx-auto mb-4 opacity-20" />
+                <p className="text-slate">No recent activity detected.</p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Quick Actions & Insights */}
-        <div className="space-y-8">
+        {/* Sidebar Insights */}
+        <div className="lg:col-span-4 space-y-12">
           <div>
-            <h2 className="text-2xl font-bold text-text-main tracking-tight mb-6">Quick Access</h2>
+            <h2 className="text-[24px] font-display text-ink mb-8">Directives</h2>
             <div className="space-y-4">
-              <Link href="/student/practice" className="block group">
-                <div className="p-6 bg-primary text-primary-foreground rounded-[24px] shadow-premium flex items-center justify-between hover:scale-[1.02] transition-all">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md">
-                      <PlayCircle className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-bold">Resume Practice</p>
-                      <p className="text-xs text-white/60 font-medium">Topic: Logical Reasoning</p>
-                    </div>
+              <Link href="/student/practice" className="block p-8 bg-near-black text-white rounded-xl hover:bg-cohere-black transition-all group overflow-hidden relative">
+                <div className="relative z-10">
+                  <p className="label-mono text-action-blue mb-2">Initialize</p>
+                  <h3 className="text-[24px] font-display mb-8">Start Assessment</h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-white/50">Next suggested: {tests[0]?.title || 'Practice'}</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                   </div>
-                  <ArrowRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                 </div>
+                {/* Decorative glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-action-blue/20 blur-[60px] pointer-events-none" />
               </Link>
 
-              <div className="p-6 bg-canvas border border-hairline rounded-[24px] shadow-card-sm flex items-center justify-between hover:border-text-subtle cursor-pointer transition-all group">
+              <div className="p-6 border border-hairline rounded-xl flex items-center justify-between hover:bg-stone cursor-pointer transition-colors group">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-surface-soft rounded-2xl flex items-center justify-center">
-                    <Target className="w-6 h-6 text-text-main" />
+                  <div className="w-10 h-10 rounded-full bg-stone flex items-center justify-center">
+                    <Target className="w-5 h-5 text-ink" />
                   </div>
-                  <p className="font-bold text-text-main">Syllabus Overview</p>
+                  <p className="font-medium text-ink">Logic Roadmap</p>
                 </div>
-                <ArrowRight className="w-5 h-5 text-text-subtle group-hover:text-text-main transition-all" />
+                <ArrowRight className="w-4 h-4 text-hairline group-hover:translate-x-1 transition-transform" />
               </div>
 
-              <div className="p-6 bg-canvas border border-hairline rounded-[24px] shadow-card-sm flex items-center justify-between hover:border-text-subtle cursor-pointer transition-all group">
+              <div className="p-6 border border-hairline rounded-xl flex items-center justify-between hover:bg-stone cursor-pointer transition-colors group">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-surface-soft rounded-2xl flex items-center justify-center">
-                    <Clock className="w-6 h-6 text-text-main" />
+                  <div className="w-10 h-10 rounded-full bg-stone flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-ink" />
                   </div>
-                  <p className="font-bold text-text-main">Test History</p>
+                  <p className="font-medium text-ink">Schedule Analysis</p>
                 </div>
-                <ArrowRight className="w-5 h-5 text-text-subtle group-hover:text-text-main transition-all" />
+                <ArrowRight className="w-4 h-4 text-hairline group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
           </div>
 
-          <div className="p-8 bg-surface-soft/50 rounded-[32px] border border-hairline">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-text-subtle mb-6 text-center">Daily Goal</h4>
-            <div className="relative w-32 h-32 mx-auto mb-6">
-              {/* Simple SVG ring for visualization */}
-              <svg className="w-full h-full transform -rotate-90">
-                <circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-hairline" />
-                <circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray="364.4" strokeDashoffset="91.1" className="text-primary" />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-text-main">75%</span>
-              </div>
+          <div className="p-8 bg-white border border-hairline rounded-[24px] shadow-sm relative overflow-hidden">
+            <p className="label-mono text-enterprise-green mb-8 text-center text-[11px] tracking-widest uppercase">Performance Index</p>
+            <div className="flex flex-col items-center">
+               <div className="text-[64px] font-display text-ink leading-none mb-2">{avgScore}</div>
+               <p className="text-slate text-sm font-medium">Cognitive Score</p>
+               
+               <div className="w-full h-1 bg-stone rounded-full mt-10 overflow-hidden">
+                  <div 
+                    className="h-full bg-enterprise-green transition-all duration-1000" 
+                    style={{ width: `${avgScore}%` }}
+                  />
+               </div>
+               <p className="text-[11px] text-muted-slate mt-4 uppercase tracking-tighter">System Baseline: 65%</p>
             </div>
-            <p className="text-center text-xs font-bold text-text-muted leading-relaxed">You're only 2 tests away <br /> from your weekly milestone!</p>
           </div>
         </div>
       </div>
@@ -166,3 +175,4 @@ export default function StudentDashboardPage() {
   );
 }
 
+const cn = (...classes: any[]) => classes.filter(Boolean).join(" ");

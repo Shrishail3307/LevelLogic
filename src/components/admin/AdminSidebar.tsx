@@ -45,15 +45,13 @@ import {
 
 const mainNav: { title: string; url: string; icon: LucideIcon }[] = [
   { title: "Console", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "All Tests", url: "/admin/tests", icon: Layers },
   { title: "Create Test", url: "/admin/create-test", icon: PlusCircle },
-  { title: "Question Bank", url: "/admin/add-questions", icon: FileQuestion },
-  { title: "Results", url: "/admin/results", icon: Users },
+  { title: "Students", url: "/admin/students", icon: Users },
+  { title: "Results", url: "/admin/results", icon: BadgeCheck },
 ];
 
-const systemNav: { title: string; url: string; icon: LucideIcon }[] = [
-  { title: "Settings", url: "/admin/settings", icon: Settings },
-  { title: "Security", url: "/admin/security", icon: Shield },
-];
+// Removed System Navigation
 
 // --- NavMain ---
 function NavMain({ items }: { items: typeof mainNav }) {
@@ -61,42 +59,9 @@ function NavMain({ items }: { items: typeof mainNav }) {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Management</SidebarGroupLabel>
-      <SidebarGroupContent>
-        <SidebarMenu className="gap-1">
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                size="lg"
-                isActive={pathname.startsWith(item.url)}
-                tooltip={item.title}
-              >
-                <Link
-                  href={item.url}
-                  className="group-data-[collapsible=icon]:justify-center"
-                >
-                  <item.icon />
-                  <span className="group-data-[collapsible=icon]:hidden">
-                    {item.title}
-                  </span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
-  );
-}
-
-// --- NavSystem ---
-function NavSystem({ items }: { items: typeof systemNav }) {
-  const pathname = usePathname();
-
-  return (
-    <SidebarGroup>
-      <SidebarGroupLabel>System</SidebarGroupLabel>
+      <SidebarGroupLabel className="label-mono text-muted-slate mb-2 group-data-[collapsible=icon]:hidden">
+        Management
+      </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu className="gap-1.5">
           {items.map((item) => (
@@ -104,15 +69,16 @@ function NavSystem({ items }: { items: typeof systemNav }) {
               <SidebarMenuButton
                 asChild
                 size="lg"
-                isActive={pathname === item.url}
+                isActive={pathname.startsWith(item.url)}
                 tooltip={item.title}
+                className="rounded-2xl data-[active=true]:bg-near-black data-[active=true]:text-white data-[active=true]:shadow-lg data-[active=true]:shadow-near-black/10 transition-all duration-200"
               >
                 <Link
                   href={item.url}
-                  className="group-data-[collapsible=icon]:justify-center"
+                  className="flex items-center gap-3 group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:justify-center"
                 >
-                  <item.icon />
-                  <span className="group-data-[collapsible=icon]:hidden">
+                  <item.icon className="size-5 shrink-0" />
+                  <span className="group-data-[collapsible=icon]:hidden font-medium">
                     {item.title}
                   </span>
                 </Link>
@@ -134,7 +100,7 @@ function NavUser() {
 
   const handleLogout = () => {
     logout();
-    router.push("/admin/login");
+    router.push("/login");
   };
 
   const initials = user?.name
@@ -152,34 +118,34 @@ function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="rounded-2xl data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg bg-primary text-primary-foreground text-xs font-bold">
+              <Avatar className="h-8 w-8 rounded-full border border-hairline shrink-0">
+                <AvatarFallback className="rounded-full bg-stone text-ink text-xs font-bold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-sm leading-tight ml-2 group-data-[collapsible=icon]:hidden">
                 <span className="truncate font-medium">
                   {user?.name || "Administrator"}
                 </span>
-                <span className="truncate text-xs">
+                <span className="truncate text-xs text-muted-slate">
                   {user?.email || "admin@levellogic.io"}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className="ml-auto size-4 text-muted-slate group-data-[collapsible=icon]:hidden" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-xl border-hairline shadow-sm"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarFallback className="rounded-lg bg-primary text-primary-foreground text-xs font-bold">
+                <Avatar className="h-8 w-8 rounded-full">
+                  <AvatarFallback className="rounded-full bg-stone text-ink text-xs font-bold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
@@ -187,26 +153,29 @@ function NavUser() {
                   <span className="truncate font-medium">
                     {user?.name || "Administrator"}
                   </span>
-                  <span className="truncate text-xs">
+                  <span className="truncate text-xs text-muted-slate">
                     {user?.email || "admin@levellogic.io"}
                   </span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-hairline" />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
+              <DropdownMenuItem className="rounded-lg">
+                <BadgeCheck className="w-4 h-4 mr-2" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
+              <DropdownMenuItem className="rounded-lg">
+                <Bell className="w-4 h-4 mr-2" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
+            <DropdownMenuSeparator className="bg-hairline" />
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="rounded-lg text-error-red"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -221,14 +190,21 @@ function BrandHeader() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" asChild>
-          <Link href="/">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <Layers className="size-4" />
+        <SidebarMenuButton size="lg" asChild className="hover:bg-transparent">
+          <Link
+            href="/"
+            className="flex items-center gap-3 group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:justify-center"
+          >
+            <div className="flex aspect-square size-10 items-center justify-center rounded-xl bg-cohere-black text-white shrink-0 shadow-lg shadow-cohere-black/10">
+              <span className="text-sm font-bold">LL</span>
             </div>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">LevelLogic</span>
-              <span className="truncate text-xs">Admin Panel</span>
+            <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+              <span className="truncate font-display font-bold text-xl tracking-tight text-ink">
+                LevelLogic
+              </span>
+              <span className="truncate text-[10px] uppercase tracking-[0.15em] text-muted-slate font-bold">
+                Console
+              </span>
             </div>
           </Link>
         </SidebarMenuButton>
@@ -242,15 +218,19 @@ export function AdminSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" variant="floating" {...props}>
-      <SidebarHeader>
+    <Sidebar
+      collapsible="icon"
+      variant="sidebar"
+      className="border-r border-hairline bg-canvas"
+      {...props}
+    >
+      <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2 border-b border-hairline mb-4">
         <BrandHeader />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-3 group-data-[collapsible=icon]:px-2">
         <NavMain items={mainNav} />
-        <NavSystem items={systemNav} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2 border-t border-hairline mt-auto">
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

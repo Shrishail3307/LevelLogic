@@ -1,82 +1,99 @@
 "use client";
 
-import { ArrowRight, FileText } from "lucide-react";
+import { useDataStore } from "@/lib/store";
+import { ArrowRight, FileText, Calendar, Target, Award, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { ScorePill } from "@/components/ui/score-pill";
-import { mockResults } from "@/lib/mock-data";
 
 export default function StudentResultsPage() {
+  const { results } = useDataStore();
+
   return (
-    <div className="space-y-10 max-w-6xl mx-auto pb-20 selection:bg-surface-strong">
+    <div className="space-y-12 max-w-7xl mx-auto pb-24 selection:bg-stone">
       {/* Editorial Header */}
-      <div className="mb-10">
-        <h1 className="text-[36px] font-normal leading-[1.2] tracking-[-0.72px] text-ink mb-2">My Results</h1>
-        <p className="text-[16px] text-body max-w-[600px] leading-[1.5]">
-          Review your past test performance, analyze your logical milestones, and track your progress toward mastery.
+      <div className="border-b border-hairline pb-12">
+        <p className="label-mono text-coral mb-4">Milestone Tracker</p>
+        <h1 className="text-[48px] font-display text-ink leading-tight">Achievement History</h1>
+        <p className="text-slate text-[18px] max-w-2xl mt-4">
+          Detailed breakdown of your historical performance. Analyze cognitive patterns and identify areas for accelerated learning.
         </p>
       </div>
       
-      {/* Full width Results Table */}
-      <div className="bg-canvas border border-hairline rounded-[24px] shadow-none overflow-hidden">
+      {/* Results Table - Research Table Style */}
+      <div className="bg-canvas border border-hairline rounded-[24px] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-canvas-soft border-b border-hairline">
-                <th className="px-8 py-5 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">Test Name</th>
-                <th className="px-8 py-5 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink text-center">Date Taken</th>
-                <th className="px-8 py-5 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink text-center">Score</th>
-                <th className="px-8 py-5 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink text-right">Action</th>
+              <tr className="bg-stone/30 border-b border-hairline">
+                <th className="px-8 py-6 text-[11px] font-semibold uppercase tracking-widest text-muted-slate">Module Information</th>
+                <th className="px-8 py-6 text-[11px] font-semibold uppercase tracking-widest text-muted-slate">Session Identity</th>
+                <th className="px-8 py-6 text-[11px] font-semibold uppercase tracking-widest text-muted-slate text-center">Outcome</th>
+                <th className="px-8 py-6 text-[11px] font-semibold uppercase tracking-widest text-muted-slate text-right">Reference</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-hairline-soft">
-              {mockResults.map((result) => (
-                <tr key={result.id} className="group hover:bg-canvas-soft transition-colors">
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-surface-card border border-hairline flex items-center justify-center shadow-none flex-shrink-0">
-                        <FileText className="w-5 h-5 text-ink" />
+            <tbody className="divide-y divide-hairline">
+              {results.map((result) => (
+                <tr key={result.id} className="group hover:bg-stone/10 transition-colors">
+                  <td className="px-8 py-8">
+                    <div className="flex items-center gap-6">
+                      <div className="w-12 h-12 rounded-xl bg-canvas border border-hairline flex items-center justify-center group-hover:bg-action-blue group-hover:text-white transition-all duration-300">
+                        <FileText className="w-6 h-6" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-medium text-ink group-hover:translate-x-1 transition-transform inline-block">
+                        <span className="text-[20px] font-display text-ink group-hover:text-action-blue transition-colors">
                           {result.testTitle}
                         </span>
-                        <span className="text-[13px] font-mono text-body mt-1">
-                          Ref: {result.id.toUpperCase()}
-                        </span>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Calendar className="w-3.5 h-3.5 text-muted-slate" />
+                          <span className="text-[13px] text-muted-slate">
+                            {new Date(result.date).toLocaleDateString(undefined, { 
+                              year: 'numeric', 
+                              month: 'long', 
+                              day: 'numeric' 
+                            })}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-center text-[14px] font-mono text-body">
-                    {new Date(result.date).toLocaleDateString(undefined, { 
-                      year: 'numeric', 
-                      month: 'short', 
-                      day: 'numeric' 
-                    })}
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="flex justify-center">
-                      <ScorePill score={result.score} total={result.total} />
+                  <td className="px-8 py-8">
+                    <div className="flex flex-col">
+                      <span className="text-[14px] font-mono text-ink">ID: {result.id.toUpperCase()}</span>
+                      <span className="text-[12px] text-muted-slate mt-1 uppercase tracking-wider">Verified Result</span>
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-right">
+                  <td className="px-8 py-8">
+                    <div className="flex flex-col items-center justify-center">
+                      <span className="text-[24px] font-display text-ink leading-none">{result.score}<span className="text-sm text-muted-slate ml-1">/ {result.total}</span></span>
+                      <div className={cn(
+                        "mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest border",
+                        result.status === 'Pass' 
+                          ? "bg-enterprise-green/5 text-enterprise-green border-enterprise-green/20" 
+                          : "bg-coral/5 text-coral border-coral/20"
+                      )}>
+                        {result.status}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-8 py-8 text-right">
                     <Link 
                       href={`/student/results/${result.id}`} 
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-surface-card border border-hairline hover:border-hairline-strong hover:bg-canvas-soft transition-all shadow-none"
+                      className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-hairline group-hover:bg-ink group-hover:text-white group-hover:border-ink transition-all duration-300"
                     >
-                      <ArrowRight className="w-4 h-4 text-ink" />
+                      <ChevronRight className="w-5 h-5" />
                     </Link>
                   </td>
                 </tr>
               ))}
               
-              {mockResults.length === 0 && (
+              {results.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-8 py-20 text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-canvas-soft mb-4">
-                      <FileText className="w-8 h-8 text-muted" />
+                  <td colSpan={4} className="px-8 py-24 text-center">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-stone mb-6">
+                      <Award className="w-10 h-10 text-muted-slate" />
                     </div>
-                    <p className="text-[16px] text-ink font-medium">No results found</p>
-                    <p className="text-[14px] text-body mt-1">You haven't taken any tests yet.</p>
+                    <h3 className="text-[24px] font-display text-ink">No achievements yet</h3>
+                    <p className="text-slate max-w-sm mx-auto mt-2">Initialize your first training session to begin generating performance records.</p>
                   </td>
                 </tr>
               )}
@@ -87,3 +104,5 @@ export default function StudentResultsPage() {
     </div>
   );
 }
+
+const cn = (...classes: any[]) => classes.filter(Boolean).join(" ");

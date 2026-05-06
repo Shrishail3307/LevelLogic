@@ -8,13 +8,9 @@ import {
   BookOpen,
   FileText,
   LogOut,
-  Layers,
-  Settings,
-  HelpCircle,
   ChevronsUpDown,
   BadgeCheck,
   Bell,
-  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store";
@@ -45,13 +41,8 @@ import {
 
 const mainNav: { title: string; url: string; icon: LucideIcon }[] = [
   { title: "Dashboard", url: "/student/dashboard", icon: LayoutDashboard },
-  { title: "Practice Tests", url: "/student/practice", icon: BookOpen },
+  { title: "Available Tests", url: "/student/practice", icon: BookOpen },
   { title: "My Results", url: "/student/results", icon: FileText },
-];
-
-const supportNav: { title: string; url: string; icon: LucideIcon }[] = [
-  { title: "Settings", url: "/student/settings", icon: Settings },
-  { title: "Help Center", url: "/student/help", icon: HelpCircle },
 ];
 
 // --- NavMain ---
@@ -60,7 +51,9 @@ function NavMain({ items }: { items: typeof mainNav }) {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Learning</SidebarGroupLabel>
+      <SidebarGroupLabel className="label-mono text-muted-slate mb-2 group-data-[collapsible=icon]:hidden">
+        Learning
+      </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu className="gap-1.5">
           {items.map((item) => (
@@ -70,48 +63,12 @@ function NavMain({ items }: { items: typeof mainNav }) {
                 size="lg"
                 isActive={pathname.startsWith(item.url)}
                 tooltip={item.title}
+                className="rounded-2xl group-data-[collapsible=icon]:justify-center data-[active=true]:bg-near-black data-[active=true]:text-white data-[active=true]:shadow-lg data-[active=true]:shadow-near-black/10 transition-all duration-200"
               >
-                <Link
-                  href={item.url}
-                  className="group-data-[collapsible=icon]:justify-center"
-                >
-                  <item.icon />
-                  <span className="group-data-[collapsible=icon]:hidden">
-                    {item.title}
-                  </span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
-  );
-}
+                <Link href={item.url}>
+                  <item.icon className="size-5 shrink-0" />
 
-// --- NavSupport ---
-function NavSupport({ items }: { items: typeof supportNav }) {
-  const pathname = usePathname();
-
-  return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Support</SidebarGroupLabel>
-      <SidebarGroupContent>
-        <SidebarMenu className="gap-1.5">
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                size="lg"
-                isActive={pathname === item.url}
-                tooltip={item.title}
-              >
-                <Link
-                  href={item.url}
-                  className="group-data-[collapsible=icon]:justify-center"
-                >
-                  <item.icon />
-                  <span className="group-data-[collapsible=icon]:hidden">
+                  <span className="font-medium group-data-[collapsible=icon]:hidden">
                     {item.title}
                   </span>
                 </Link>
@@ -133,7 +90,7 @@ function NavUser() {
 
   const handleLogout = () => {
     logout();
-    router.push("/student/login");
+    router.push("/login");
   };
 
   const initials = user?.name
@@ -151,68 +108,64 @@ function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="rounded-2xl group-data-[collapsible=icon]:justify-center data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg bg-primary text-primary-foreground text-xs font-bold">
+              <Avatar className="h-8 w-8 rounded-full border border-hairline shrink-0">
+                <AvatarFallback className="rounded-full bg-stone text-ink text-xs font-bold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                 <span className="truncate font-medium">
-                  {user?.name || "Student"}
+                  {user?.name || "Student User"}
                 </span>
-                <span className="truncate text-xs">
+                <span className="truncate text-xs text-muted-slate">
                   {user?.email || "student@levellogic.io"}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className="ml-auto size-4 text-muted-slate group-data-[collapsible=icon]:hidden" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-xl border-hairline shadow-sm"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarFallback className="rounded-lg bg-primary text-primary-foreground text-xs font-bold">
+                <Avatar className="h-8 w-8 rounded-full">
+                  <AvatarFallback className="rounded-full bg-stone text-ink text-xs font-bold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
-                    {user?.name || "Student"}
+                    {user?.name || "Student User"}
                   </span>
-                  <span className="truncate text-xs">
+                  <span className="truncate text-xs text-muted-slate">
                     {user?.email || "student@levellogic.io"}
                   </span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-hairline" />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              <DropdownMenuItem className="rounded-lg">
+                <BadgeCheck className="w-4 h-4 mr-2" />
+                Profile
               </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
+              <DropdownMenuItem className="rounded-lg">
+                <Bell className="w-4 h-4 mr-2" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
+            <DropdownMenuSeparator className="bg-hairline" />
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="rounded-lg text-error-red"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -227,14 +180,18 @@ function BrandHeader() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" asChild>
+        <SidebarMenuButton
+          asChild
+          className="hover:bg-transparent group-data-[collapsible=icon]:justify-center"
+        >
           <Link href="/">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <Layers className="size-4" />
+            <div className="flex aspect-square size-8 items-center justify-center rounded-xl bg-cohere-black text-white shrink-0 shadow-lg shadow-cohere-black/10">
+              <span className="text-sm font-bold">LL</span>
             </div>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">LevelLogic</span>
-              <span className="truncate text-xs">Student Portal</span>
+            <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+              <span className="truncate font-display font-bold text-lg text-ink">
+                LevelLogic
+              </span>
             </div>
           </Link>
         </SidebarMenuButton>
@@ -248,15 +205,19 @@ export function StudentSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" variant="floating" {...props}>
-      <SidebarHeader>
+    <Sidebar
+      collapsible="icon"
+      variant="floating"
+      className="border-r border-hairline bg-canvas"
+      {...props}
+    >
+      <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2 border-b border-hairline mb-4">
         <BrandHeader />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-3 group-data-[collapsible=icon]:px-2">
         <NavMain items={mainNav} />
-        <NavSupport items={supportNav} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2 border-t border-hairline mt-auto">
         <NavUser />
       </SidebarFooter>
       <SidebarRail />
